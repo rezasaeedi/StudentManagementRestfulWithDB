@@ -1,6 +1,11 @@
 package com.example.testdatabase.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "students")
@@ -12,12 +17,30 @@ public class Student {
     private String stuID;
     private int age;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "school_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private School school;
+
+    /*
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "stu_less",
+            joinColumns = { @JoinColumn(name = "stu_ID") },
+            inverseJoinColumns = { @JoinColumn(name = "lesson_id") })
+    private Set<Lesson> less = new HashSet<>();
+    */
+
     protected Student() {}
 
-    public Student(String name, int age, String stuID) {
+    public Student(String name, int age, String stuID, School school) {
         this.name = name;
         this.age = age;
         this.stuID = stuID;
+        this.school = school;
     }
 
     @Override
@@ -53,5 +76,13 @@ public class Student {
 
     public void setAge(int age){
         this.age = age;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
     }
 }
